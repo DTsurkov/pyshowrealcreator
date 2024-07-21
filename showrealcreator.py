@@ -5,8 +5,9 @@ from moviepy.editor import *
 
 Filetype = "*.mp4"
 Folder = "video"
-dataList = "video2.list"
+dataList = "video.list"
 outFile = "test.mp4"
+SkipItro = True
 
 giftFiles = [glob.glob(str(Folder+"\\"+Filetype))]
 toMerge = []
@@ -55,10 +56,13 @@ for i in range(len(toMerge)):
     #clips.append(VideoFileClip(inputFile))
     background_clip = ColorClip((1280,720), (0,0,0), duration=VideoFileClip(inputFile).duration)
     #clips.append(CompositeVideoClip([background_clip, VideoFileClip(inputFile).resize(height=720).set_pos('center'),title_clip((1280,720), VideoFileClip(inputFile).duration, title)]))
-    if i == 0:
+    if i == 0 and SkipItro != True:
         clips.append(CompositeVideoClip([VideoFileClip(inputFile).resize(height=720).set_pos('center'),title_clip((1280,720), VideoFileClip(inputFile).duration, title),color_clip((1280,720), 6, "Актёрский шоурил.\nМарина Цуркова.")]))
     else:
-        clips.append(CompositeVideoClip([background_clip, VideoFileClip(inputFile).resize(height=720).set_pos('center'),title_clip((1280,720), VideoFileClip(inputFile).duration, title)]))
+        if title != "none":
+            clips.append(CompositeVideoClip([background_clip, VideoFileClip(inputFile).resize(height=720).set_pos('center'),title_clip((1280,720), VideoFileClip(inputFile).duration, title)]))
+        else:
+            clips.append(VideoFileClip(inputFile).resize(height=720).set_pos('center'))
 
 newClip = concatenate_videoclips(clips)
 newClip.write_videofile(outFile, audio_codec="aac")
